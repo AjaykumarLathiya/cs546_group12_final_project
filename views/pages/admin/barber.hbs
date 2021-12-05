@@ -1,0 +1,103 @@
+<div class="container-fluid">
+    <div class="row row-cols-12 justify-content-md-end p-3">
+        <a type="button" class="btn btn-info" href="{{base_url}}/admin/barber/add">+ Add</a>
+    </div>
+    <div class="row row-cols-12 justify-content-md-center">
+        <h1>Barbers</h1>
+    </div>
+    <div class="row row-cols-12">
+        <table class="table m-5">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">User First Name</th>
+                    <th scope="col">User Last Name</th>
+                    <th scope="col">Experience</th>
+                    <th scope="col">Average Review</th>
+                    <th scope="col">Contact No</th>
+                    <th scope="col">User Email</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each lstBarber}}
+                <tr>
+                    <td>{{userFirstName}}</td>
+                    <td>{{userLastName}}</td>
+                    <td>{{experience}}</td>
+                    <td>{{averageReview}}</td>
+                    <td>{{contactNo}}</td>
+                    <td>{{userEmail}}</td>
+                    <td>
+                        {{#ifMatch status "PENDING"}}
+                        <button type="button" class="btn btn-sm btn-success"
+                            onclick="onRequestAccept('{{_id}}','APPROVED')">Approved</button>
+                        <button type="button" class="btn btn-sm btn-danger"
+                            onclick="onRequestAccept('{{_id}}','REJECTED')">Rejected</button>
+                        {{/ifMatch}}
+                        {{#ifMatch status "APPROVED"}}
+                        <button type="button" class="btn btn-sm btn-success">APPROVED</button>
+                        {{/ifMatch}}
+
+                        {{#ifMatch status "REJECTED"}}
+                        <button type="button" class="btn btn-sm btn-danger">REJECTED</button>
+                    </td>
+                    {{/ifMatch}}
+                    <td>
+                        <a type="button" class="btn btn-info" href="{{base_url}}/admin/barber/edit/{{_id}}">Edit</a>
+                        <button type="button" class="btn btn-danger" onclick="onDeleteClick('{{_id}}')">Delete</button>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    function onRequestAccept(id, status) {
+
+        let io = {
+            status: status
+        }
+        console.log(io, "io")
+        var settings = {
+            "url": `{{base_url}}/admin/requestAccept/${id}`,
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": JSON.stringify(io),
+        };
+
+        $.ajax(settings).done(function (response) {
+            window.location.assign("{{base_url}}/admin/barber")
+        }).catch((ex) => {
+            console.log(ex)
+            alert(ex.responseJSON.msg)
+        });
+    }
+    function onDeleteClick(id) {
+        let isConfirmed = confirm("Do you really want to delete?")
+        if (!isConfirmed) return;
+
+        const io = {}
+
+        var settings = {
+            "url": `{{base_url}}/admin/barber/delete/${id}`,
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": JSON.stringify(io),
+        };
+
+        $.ajax(settings).done(function (response) {
+            window.location.assign("{{base_url}}/admin/barber")
+        }).catch((ex) => {
+            console.log(ex)
+            alert(ex.responseJSON.msg)
+        });
+    }
+</script>
