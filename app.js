@@ -75,8 +75,11 @@ async function main() {
         app.use(commonMW)
         app.use(authMW)
 
-      
+
+        app.use("/login", loginRoute)
         app.use("/admin", adminRoute)
+        app.use("/customer", customerRoute)
+        app.use("/barber", barberRoute)
       
 
         app.get('/', function (req, res) {
