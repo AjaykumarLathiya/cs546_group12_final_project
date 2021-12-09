@@ -18,7 +18,6 @@ const barberRoute = require('./routes/barber.route')
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const store = new session.MemoryStore();
-var NedbStore = require('nedb-session-store')(session);
 const { connectMongo } = require('./config/mongoConnection')
 
 const cookieParser = require("cookie-parser");
@@ -57,9 +56,6 @@ async function main() {
             saveUninitialized: true,
             cookie: { maxAge: 1000 * 60 * 60 * 24 },
             resave: false,
-            store: new NedbStore({
-                filename: path.join(os.tmpdir(), "salon-session.db")
-            })
         }))
 
 
@@ -75,19 +71,17 @@ async function main() {
         app.use(commonMW)
         app.use(authMW)
 
-
         app.use("/login", loginRoute)
         app.use("/admin", adminRoute)
         app.use("/customer", customerRoute)
         app.use("/barber", barberRoute)
-      
 
         app.get('/', function (req, res) {
             res.render('./pages/login/home', { layout: 'guest', objUser: req.session.objUser });
         })
 
         app.listen(port, async () => {
-            console.log(`App listening to port ${port}`)
+            console.log(`Your server is running on http://localhost:${port}`)
             let objUser = await UserService.getUserByEmail(userEmail)
             if (objUser)
                 return
