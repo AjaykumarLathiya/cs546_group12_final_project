@@ -1,0 +1,80 @@
+<div class="container">
+    <h1 style="text-align: center;">Appointments</h1>
+    <div class="row">
+        {{#if lstAppointment}}
+        {{#each lstAppointment}}
+        <div class="col-md-4 box">
+            <div class="card bg-light mb-4">
+                <h3 class="card-header" style="text-align: center;"><b>{{objCustomer.userFirstName}}
+                        {{objCustomer.userLastName}}</b></h3>
+                <div class="card-body">
+                    <h6 class="card-title"><b>Email:-</b> {{objCustomer.userEmail}}</h6>
+                    <h6 class="card-title"><b>Phone:-</b> {{objCustomer.contactNo}}</h6>
+                    <h6 class="card-title"><b>Date Time:-</b> {{format_date_time dateTime}}</h6>
+                    <h6 class="card-title"><b>Description:-</b> {{description}}</h6>
+                </div>
+                {{#ifMatch status "PENDING"}}
+                <div class="card-footer bg-transparent border-success" style="display: flex; justify-content: center;">
+                    <button type="button" class="btn btn-outline-success"
+                        onclick="onChangeAppointmentStatus('{{_id}}','ACCEPTED')">Accept</button>&nbsp;&nbsp;
+                    <button type="button" class="btn btn-outline-danger"
+                        onclick="onChangeAppointmentStatus('{{_id}}','REJECTED')">Reject</button>
+                </div>
+                {{/ifMatch}}
+                {{#ifMatch status "ACCEPTED"}}
+                <div class="card-footer bg-success border-success" style="text-align: center;  color:white ;">
+                    Accepted</div>
+
+                {{/ifMatch}}
+
+                {{#ifMatch status "REJECTED"}}
+                <div class="card-footer bg-danger border-danger" style="text-align: center; color:white ;">Rejected
+                </div>
+                {{/ifMatch}}
+
+                {{#ifMatch status "CANCEL"}}
+                <div class="card-footer bg-secondary border-secondary" style="text-align: center; color:white ;">
+                    Canceled
+                </div>
+                {{/ifMatch}}
+            </div>
+            {{!--
+        </div> --}}
+    </div>
+    {{/each}}
+    {{else}}
+    <div style="width: 100%;">
+        <h4 class="pt-3" style="text-align: center;">There are no appointment found</h4>
+    </div>
+    {{/if}}
+
+</div>
+</div>
+
+
+<script>
+    function onChangeAppointmentStatus(id, status) {
+        event.preventDefault();
+
+        const io = {
+            status: status,
+        }
+
+        var settings = {
+            "url": `{{base_url}}/barber/changeAppointmentStatus/${id}`,
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": JSON.stringify(io),
+        };
+
+        $.ajax(settings).done(function (response) {
+            alert(response.data.data)
+            window.location.assign("{{base_url}}/barber/appointment")
+        }).catch((ex) => {
+            console.log(ex)
+            alert('Error')
+        });
+    }
+</script>
