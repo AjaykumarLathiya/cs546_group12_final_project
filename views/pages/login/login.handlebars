@@ -1,0 +1,60 @@
+<div id="login">
+    <h3 class="text-center text-white pt-5">Login form</h3>
+    <div class="container">
+        <div id="login-row" class="row justify-content-center align-items-center">
+            <div id="login-column" class="col-md-6">
+                <div id="login-box" class="col-md-12">
+                    <form action="javascript:void()" id="login-form" class="form" onsubmit="onSubmit(event)">
+                        <h3 class="text-center text-primary">Login</h3>
+                        <div class="form-group">
+                            <label for="username" class="text-primary">Username:</label><br>
+                            <input required type="text" name="userEmail" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="text-primary">Password:</label><br>
+                            <input required type="password" name="password" class="form-control" />
+                        </div>
+                        <div class="form-group" style="display: flex;justify-content: center;">
+                            <input type="submit" class="btn btn-primary" value="Login" />
+                        </div>
+                        <div>
+                            <a href="{{base_url}}/login/registrationBarber">Barber Registration</a>
+                        </div>
+                        <div>
+                            <a href="{{base_url}}/login/registrationCustomer">Customer Registration</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function onSubmit(event) {
+        event.preventDefault();
+        let frm = event.target;
+        const io = {
+            userEmail: frm.elements.userEmail.value,
+            password: frm.elements.password.value,
+        }
+
+        var settings = {
+            "url": "{{base_url}}/login",
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": JSON.stringify(io),
+        };
+
+        $.ajax(settings).done(function (response) {
+            alert('Login successfully')
+            let userType = response.data.type.toLowerCase()
+            window.location.assign(`{{base_url}}/${userType}`)
+        }).catch((ex) => {
+            console.log(ex)
+            alert(ex.responseJSON.msg)
+        });
+    }
+</script>
