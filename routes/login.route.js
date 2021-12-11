@@ -2,22 +2,30 @@ const express = require('express');
 const UserService = require('../services/user.service');
 const router = express.Router();
 
+
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 router.get("/", async (req, res) => {
-    res.render('./pages/login/login', { layout: 'guest' });
+    res.render('./pages/login/login', { layout: 'guest', objUser: req.session.objUser });
+})
+
+router.get("/aboutUs", async (req, res) => {
+    res.render('./pages/login/aboutUs', { layout: 'guest', objUser: req.session.objUser });
 })
 
 router.post("/", async (req, res) => {
     try {
 
         let objUser = await UserService.getUserByEmail(req.body.userEmail)
-        // console.log(objUser)
-
         if (!objUser) {
             throw new Error("User not found")
         }
-        if (objUser.password !== req.body.password) {
+        const match = await bcrypt.compare(req.body.password, objUser.password);
+        if (!match) {
             throw new Error("Wrong Password")
         }
+
         if (objUser.status === "PENDING") {
             throw new Error("Request Pending")
         }
@@ -25,7 +33,7 @@ router.post("/", async (req, res) => {
             throw new Error("Your request rejected please contact admin")
         }
 
-        req.session.objUser = objUser;
+        req.session.objUser = { ...objUser, _id: objUser._id.toString() };
 
         res.sendSuccess({ type: objUser.type }, "Login successfully")
     }
@@ -41,12 +49,14 @@ router.get("/registrationBarber", async (req, res) => {
 router.post("/registration/barber", async (req, res) => {
     try {
         let objUser = await UserService.getUserByEmail(req.body.userEmail)
-        console.log(objUser, "objUser")
+
+        const hash = await bcrypt.hash(req.body.password, saltRounds);
+        req.body.password = hash
+        let result = await UserService.addUser(req.body)
 
         if (objUser)
             throw Error('Email Already Exist')
 
-        let result = await UserService.addUser(req.body)
         res.sendSuccess("Barber is add successfully")
     }
     catch (ex) {
@@ -56,6 +66,25 @@ router.post("/registration/barber", async (req, res) => {
 
 router.get("/registrationCustomer", async (req, res) => {
     res.render('./pages/login/registrationCustomer', { layout: 'guest' });
+})
+
+
+router.post("/registration/customer", async (req, res) => {
+    try {
+        let objUser = await UserService.getUserByEmail(req.body.userEmail)
+
+        const hash = await bcrypt.hash(req.body.password, saltRounds);
+        req.body.password = hash
+        let result = await UserService.addUser(req.body)
+
+        if (objUser)
+            throw Error('Email Already Exist')
+
+        res.sendSuccess("Barber is add successfully")
+    }
+    catch (ex) {
+        res.sendError(ex, ex.message)
+    }
 })
 
 router.get('/logout', (req, res) => {
