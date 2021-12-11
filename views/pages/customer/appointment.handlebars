@@ -1,0 +1,230 @@
+<div class="container">
+    <h1 style="text-align: center;">Appointments</h1>
+    <div class="row">
+        {{#if lstAppointment}}
+        {{#each lstAppointment}}
+        <div class="col-md-4 box">
+            <div class="card bg-light mb-4">
+                <h3 class="card-header" style="text-align: center;"><b>{{objBarber.userFirstName}}
+                        {{objBarber.userLastName}}</b></h3>
+                <div class="card-body">
+                    <h6 class="card-title"><b>Email:-</b> {{objBarber.userEmail}}</h6>
+                    <h6 class="card-title"><b>Phone:-</b> {{objBarber.contactNo}}</h6>
+                    <h6 class="card-title"><b>Date Time:-</b> {{format_date_time dateTime}}</h6>
+                    <h6 class="card-title"><b>Description:-</b> {{description}}</h6>
+                    <h6 class="card-title"><b>Status:-</b> {{status}}</h6>
+                    {{#ifMatch status "ACCEPTED"}}
+                    <div style="display: flex; justify-content: center;">
+                        <button type="button" class="btn btn-outline-primary" data-toggle="modal"
+                            data-target="#ratingModel" data-whatever="@mdo"
+                            onclick="onWriteReview('{{objBarber._id}}','{{objBarber.userFirstName}}','{{objBarber.userLastName}}','{{objBarber.userEmail}}','{{objBarber.contactNo}}')">Write
+                            Review</button>
+                    </div>
+                    {{/ifMatch}}
+
+                    {{#ifMatch status "PENDING"}}
+                    <div style="display: flex; justify-content: center;">
+                        <button type="button" class="btn btn-outline-danger"
+                            onclick="onCancelAppointment('{{_id}}')">Cancel
+                            Appointment</button>
+                    </div>
+                    {{/ifMatch}}
+                </div>
+            </div>
+        </div>
+        {{/each}}
+        {{else}}
+        <div style="width: 100%;">
+            <h4 class="pt-3" style="text-align: center;">No Appointment found</h4>
+        </div>
+        {{/if}}
+    </div>
+</div>
+
+
+{{!-- Model Rating--}}
+<div class="modal fade" id="ratingModel" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Review</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="p-3">
+                <h6 class="modal-title" id="barberFirstNameRating"></h6>
+                <h6 class="modal-title" id="barberEmailRating"></h6>
+                <h6 class="modal-title" id="barberContactRating"></h6>
+            </div>
+            <form action="javascript:void()" onsubmit="onReview(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="number" class="col-form-label">Rating</label>
+                        <input required type="number" class="form-control" id="recipient-name" name="rating"
+                            pattern="[0-5]{1}">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Comment:</label>
+                        <textarea required class="form-control" name="comment"></textarea>
+                    </div>
+                </div>
+                <div style="display: flex;align-items: center;justify-content: center;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>&nbsp;
+                    <button type="submit" class="btn btn-primary"> Rate Now</button>
+                </div>
+
+                <h2 class="p-3" style="text-align: center;"></h2>
+                <div id="lstReview"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{{!-- Model Rating--}}
+<div class="modal fade" id="ratingModel" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Review</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="p-3">
+                <h6 class="modal-title" id="barberFirstNameRating"></h6>
+                <h6 class="modal-title" id="barberEmailRating"></h6>
+                <h6 class="modal-title" id="barberContactRating"></h6>
+            </div>
+            <form action="javascript:void()" onsubmit="onReview(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="number" class="col-form-label">Rating</label>
+                        <input required type="number" class="form-control" id="recipient-name" name="rating"
+                            pattern="[0-5]{1}">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Comment:</label>
+                        <textarea required class="form-control" name="comment"></textarea>
+                    </div>
+                </div>
+                <div style="display: flex;align-items: center;justify-content: center;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>&nbsp;
+                    <button type="submit" class="btn btn-primary"> Rate Now</button>
+                </div>
+
+                <h2 class="p-3" style="text-align: center;"></h2>
+                <div id="lstReview"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    var customerId = '{{objUser._id}}'
+
+    function onReview(event) {
+        event.preventDefault();
+        let frm = event.target;
+        if (frm.elements.rating.value > 5) {
+            alert('rating must be 0 to 5')
+            return
+        }
+        const io = {
+            customerId: customerId,
+            barberId: window.objBarber.barberId,
+            rating: parseFloat(frm.elements.rating.value),
+            comment: frm.elements.comment.value,
+            createdAt: new Date()
+        }
+        var settings = {
+            "url": "{{base_url}}/customer/giveReview",
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": JSON.stringify(io),
+        };
+
+        $.ajax(settings).done(function (response) {
+            alert(response.data.data)
+            window.location.assign("{{base_url}}/customer/appointment")
+        }).catch((ex) => {
+            console.log(ex)
+            alert(ex.responseJSON.msg)
+        });
+    }
+
+    function onWriteReview(barberId, barberFirstName, barberLastName, barberEmail, contactNo) {
+        window.objBarber = {
+            barberId: barberId,
+            barberFirstName: barberFirstName,
+            barberLastName: barberLastName,
+            barberEmail: barberEmail,
+            contactNo: contactNo,
+        }
+        $("#barberFirstNameRating").text("Barber Name:-      " + barberFirstName + "    " + barberLastName)
+        $("#barberEmailRating").text("Barber Email:-      " + barberEmail)
+        $("#barberContactRating").text("Barber Phone:-      " + contactNo)
+
+        var settings = {
+            "url": `{{base_url}}/customer/getReviewById/${window.objBarber.barberId}`,
+            "method": "GET",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+        };
+
+        $.ajax(settings).done(function (response) {
+            let lst = ""
+            let lstReview = document.querySelector('#lstReview');
+            if (response.data.lstReview.length == 0) {
+                lst = `<h2 class="p-3" style="text-align: center;"><b>No review found</b></h2>`
+                lstReview.innerHTML = lst
+            }
+            else {
+                lst = response.data.lstReview.map((obj) => {
+                    return (
+                        `<div class="card p-3" style="border-radius: 10px; background:rgba(225, 239, 240, 0.808) ;">
+                        <h5>User Name:-<b> ${obj.objCustomer.userFirstName}</b></h5>
+                        <h5>Rating:- <b>${obj.rating}</b></h5>
+                        <h5>Comment:- <b>${obj.comment}</b></h5>
+                    </div>`
+                    )
+                })
+                lstReview.innerHTML = `<h2 class="p-3" style="text-align: center;"><b>Other reviews</b></h2>` + lst.join(" ");
+            }
+        }).catch((ex) => {
+            console.log(ex)
+            alert(ex.responseJSON.msg)
+        });
+    }
+
+    function onCancelAppointment(id) {
+        event.preventDefault();
+
+        const io = {
+            status: "CANCEL",
+        }
+
+        var settings = {
+            "url": `{{base_url}}/customer/cancelAppointment/${id}`,
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": JSON.stringify(io),
+        };
+
+        $.ajax(settings).done(function (response) {
+            alert(response.data.data)
+            window.location.assign("{{base_url}}/customer/appointment")
+        }).catch((ex) => {
+            console.log(ex)
+            alert('Error')
+        });
+    }
+</script>
