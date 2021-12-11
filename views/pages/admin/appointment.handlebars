@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12 box">
+            <div class="row row-cols-12 justify-content-md-center">
+                <h1>Appointment</h1>
+            </div>
+            <div class="row row-cols-12">
+                <table class="table">
+                    {{#if lstAppointment}}
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Barber Name</th>
+                            <th scope="col">Date Time</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each lstAppointment}}
+                        <tr>
+                            <td>{{objCustomer.userFirstName}} {{objCustomer.userLastName}}</td>
+                            <td>{{objBarber.userFirstName}} {{objBarber.userLastName}}</td>
+                            <td>{{format_date_time dateTime}}</td>
+                            <td>{{description}}</td>
+                            {{#ifMatch status "ACCEPTED"}}
+                            <td style="color: green;">{{status}}</td>
+                            {{/ifMatch}}
+                            {{#ifMatch status "PENDING"}}
+                            <td style="color: blue;">{{status}}</td>
+                            {{/ifMatch}}
+                            {{#ifMatch status "CANCEL"}}
+                            <td style="color: gray;">{{status}}</td>
+                            {{/ifMatch}}
+                            {{#ifMatch status "REJECTED"}}
+                            <td style="color: red;">{{status}}</td>
+                            {{/ifMatch}}
+
+                        </tr>
+                        {{/each}}
+                        {{else}}
+                        <div style="width: 100%;">
+                            <h4 class="pt-3" style="text-align: center;">There are no appointment found</h4>
+                        </div>
+                        {{/if}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

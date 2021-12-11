@@ -1,0 +1,99 @@
+<div class="container-fluid" style="width: 100%;">
+    <div class="row row-cols-12 justify-content-md-end p-3">
+        <a type="button" class="btn btn-info" href="{{base_url}}/admin/customer">
+            <- Back</a>
+    </div>
+    <div class="row row-cols-12 justify-content-center">
+        <h2 style="text-align: center;">{{#if objCustomer}}Edit Customer{{else}}Add Customer{{/if}}</h2>
+    </div>
+    <div class="row row-cols-12 justify-content-center p-5" style="flex-direction: column">
+        <form action="javascript:void()" onsubmit="onSubmit(event)">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 box">
+                        User First Name
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="text" name="userFirstName" class="form-control"
+                            onkeypress="return lettersValidate(event)" value="{{objCustomer.userFirstName}}" />
+                    </div>
+
+                    <div class="col-md-3 box">
+                        User Last Name
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="text" name="userLastName" class="form-control"
+                            onkeypress="return lettersValidate(event)" value="{{objCustomer.userLastName}}" />
+                    </div>
+                    <div class="col-md-3 box">
+                        Contact No
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="text" name="contactNo" class="form-control"
+                            value="{{objCustomer.contactNo}}" pattern="[789][0-9]{9}" />
+                    </div>
+                    <div class="col-md-3 box">
+                        User Email
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="email" name="userEmail" class="form-control"
+                            value="{{objCustomer.userEmail}}" />
+                    </div>
+                    <div class="col-md-3 box">
+                        Password
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="password" name="password" class="form-control" />
+                    </div>
+                    <div class="col-md-12 justify-content-center box" style="display: flex;">
+                        <div>
+                            <input type="submit" class="btn btn-primary" value={{#if
+                                objCustomer}}"Edit"{{else}}"Add"{{/if}} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function lettersValidate(key) {
+            var keycode = (key.which) ? key.which : key.keyCode;
+
+            if ((keycode > 64 && keycode < 91) || (keycode > 96 && keycode < 123)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        }
+        function onSubmit(event) {
+            event.preventDefault();
+            let frm = event.target;
+            const io = {
+                type: "CUSTOMER",
+                userFirstName: frm.elements.userFirstName.value,
+                userLastName: frm.elements.userLastName.value,
+                contactNo: frm.elements.contactNo.value,
+                userEmail: frm.elements.userEmail.value,
+                password: frm.elements.password.value,
+            }
+            const id = "{{id}}"
+            var settings = {
+                "url": id ? "{{base_url}}/admin/customer/edit/{{id}}" : "{{base_url}}/admin/customer/add",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify(io),
+            };
+
+            $.ajax(settings).done(function (response) {
+                window.location.assign("{{base_url}}/admin/customer")
+            }).catch((ex) => {
+                console.log(ex)
+                alert(ex.responseJSON.msg)
+            });
+        }
+    </script>
