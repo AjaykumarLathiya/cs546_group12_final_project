@@ -1,0 +1,112 @@
+<div id="login">
+    <h3 class="text-center text-white">Login form</h3>
+    <div class="container">
+        <div id="login-row" class="row justify-content-center align-items-center">
+            <div id="login-column" class="col-md-6">
+                <div class="col-md-12">
+                    <form action="javascript:void()" id="login-form" class="form" onsubmit="onSubmit(event)">
+                        <h3 class="text-center text-primary">Registration</h3>
+                        <div class="form-group">
+                            <label class="text-primary">First Name : </label><br>
+                            <input required type="text" name="userFirstName" class="form-control"
+                                onkeypress="return lettersValidate(event)" value="{{objBarber.userFirstName}}" />
+                        </div>
+                        <div class="form-group">
+                            <label class="text-primary">Last name:</label><br>
+                            <input required type="text" name="userLastName" class="form-control"
+                                onkeypress="return lettersValidate(event)" value="{{objBarber.userLastName}}" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-primary">Experience:</label><br>
+                            <input required type="number" name="experience" class="form-control"
+                                value="{{objBarber.experience}}" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-primary">Contact No:</label><br>
+                            <input required type="text" name="contactNo" class="form-control"
+                                value="{{objBarber.contactNo}}" pattern="[0-9]{10}" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-primary">Email:</label><br>
+                            <input required type="email" name="userEmail" class="form-control"
+                                value="{{objBarber.userEmail}}" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" class="text-primary">Password:</label><br>
+                            <input required type="password" name="password" class="form-control"
+                                value="{{objBarber.password}}" />
+                        </div>
+                        <div class="form-group">
+                            <label for="conformPassword" class="text-primary">Confirm Password:</label><br>
+                            <input required type="password" name="conformPassword" class="form-control" value="" />
+                        </div>
+
+                        <div class="form-group" style="display: flex;justify-content: center;">
+                            <input type="submit" class="btn btn-primary" value="Registration" />
+                        </div>
+                        <div>
+                            <a href="{{base_url}}/login/registrationCustomer">Customer Registration</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function lettersValidate(key) {
+        var keycode = (key.which) ? key.which : key.keyCode;
+
+        if ((keycode > 64 && keycode < 91) || (keycode > 96 && keycode < 123)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
+    function onSubmit(event) {
+        event.preventDefault();
+        let frm = event.target;
+        if (frm.elements.password.value.length < 6) {
+            alert('Password must be minimum 6 digits')
+            return
+        }
+        if (frm.elements.conformPassword.value !== frm.elements.password.value) {
+            alert('Password and confirm password not match')
+            return
+        }
+        const io = {
+            status: "PENDING",
+            type: "BARBER",
+            userFirstName: frm.elements.userFirstName.value,
+            userLastName: frm.elements.userLastName.value,
+            experience: frm.elements.experience.value,
+            contactNo: frm.elements.contactNo.value,
+            userEmail: frm.elements.userEmail.value,
+            password: frm.elements.password.value,
+        }
+
+        var settings = {
+            "url": "{{base_url}}/login/registration/barber",
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": JSON.stringify(io),
+        };
+
+        $.ajax(settings).done(function (response) {
+            window.location.assign("{{base_url}}/login")
+        }).catch((ex) => {
+            console.log(ex)
+            alert('Error')
+        });
+    }
+</script>

@@ -1,0 +1,23 @@
+<div style=" background-image: url('{{baseUrl}}/images/bg.jpeg'); background-color: #cccccc; height: 100vh;
+    background-position: center; background-repeat: no-repeat; background-size: cover; position: relative;">
+    <div style="text-align: center;position: absolute;background-color: #0000006e;color: white;height:100%; width:100%">
+        <div
+            style="display:flex;align-items:center; justify-content: center; width:100%; height:100%; position: absolute; flex-direction: column;">
+            <h1 style="font-size: 60px; font-weight: bold;">Salon Management System</h1>
+            {{#if objUser}}
+            {{#ifMatch objUser.type "BARBER"}}
+            <a type="button" class="btn btn-success" href="{{base_url}}/barber/appointment">Getting started</a>
+            {{/ifMatch}}
+            {{#ifMatch objUser.type "CUSTOMER"}}
+            <a type="button" class="btn btn-success" href="{{base_url}}/customer/appointment">Getting started</a>
+            {{/ifMatch}}
+            {{#ifMatch objUser.type "ADMIN"}}
+            <a type="button" class="btn btn-success" href="{{base_url}}/admin/customer">Getting started</a>
+            {{/ifMatch}}
+            {{else}}
+            <a type="button" class="btn btn-success" href="{{base_url}}/login">Getting started</a>
+            {{/if}}
+            
+        </div>
+    </div>
+</div>

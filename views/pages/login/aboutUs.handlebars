@@ -1,0 +1,86 @@
+<div class="container">
+    <div class="about-section mt-5">
+        <h1>About Us Page</h1>
+        <p>Some text about who we are and what we do.</p>
+        <p>Resize the browser window to see that this page is responsive by the way.</p>
+    </div>
+
+    <h2 style="text-align:center">Our Team</h2>
+    <div class="row">
+        <div class="column">
+            <div class="card">
+                <img src="{{baseUrl}}/images/img_avatar.png" alt="Jane" style="width:100%">
+                <div class="container">
+                    <h2>Admin 1</h2>
+                    <p class="title">CEO & Founder</p>
+                    <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+                    <p>admin1@.com</p>
+                    <p><button class="button">Contact</button></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card">
+                <img src="{{baseUrl}}/images/img_avatar.png" alt="Mike" style="width:100%">
+                <div class="container">
+                    <h2>Admin 2</h2>
+                    <p class="title">Art Director</p>
+                    <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+                    <p>admin2@.com</p>
+                    <p><button class="button">Contact</button></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card">
+                <img src="{{baseUrl}}/images/img_avatar.png" alt="John" style="width:100%">
+                <div class="container">
+                    <h2>Admin 3</h2>
+                    <p class="title">Designer</p>
+                    <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+                    <p>admin3@.com</p>
+                    <p><button class="button">Contact</button></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+<div id="login">
+    <h3 class="text-center text-white">Login form</h3>
+    <div class="container">
+        <div id="login-row" class="row justify-content-center align-items-center">
+            <div id="login-column" class="col-md-10">
+                <div class="col-md-12">
+                    <form action="javascript:void()" id="login-form" class="form" onsubmit="onSubmit(event)">
+                        <h3 class="text-center text-primary">Contact Us</h3>
+                        <div class="form-group">
+                            <label class="text-primary">Name:</label><br>
+                            <input required type="text" name="userFirstName" class="form-control"
+                                value="{{objBarber.userFirstName}}" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-primary">Email:</label><br>
+                            <input required type="email" name="userEmail" class="form-control"
+                                value="{{objBarber.userEmail}}" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-primary">Message:</label><br>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group" style="display: flex;justify-content: center;">
+                            <input type="submit" class="btn btn-primary" value="Contact Us" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
