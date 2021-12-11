@@ -1,0 +1,120 @@
+<div class="container-fluid" style="width: 100%;">
+    <div class="row row-cols-12 justify-content-md-end p-3">
+        <a type="button" class="btn btn-info" href="{{base_url}}/admin/barber">
+            <- Back</a>
+    </div>
+    <div class="row row-cols-12 justify-content-center">
+        <h2 style="text-align: center;">{{#if objBarber}}Edit Barber{{else}}Add Barber{{/if}}</h2>
+    </div>
+    <div class="row row-cols-12 justify-content-center p-5" style="flex-direction: column">
+        <form action="javascript:void()" onsubmit="onSubmit(event)">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 box">
+                        First Name
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="text" name="userFirstName" class="form-control"
+                            onkeypress="return lettersValidate(event)" value="{{objBarber.userFirstName}}" />
+                    </div>
+
+                    <div class="col-md-3 box">
+                        Last Name
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="text" name="userLastName" class="form-control"
+                            onkeypress="return lettersValidate(event)" value="{{objBarber.userLastName}}" />
+                    </div>
+
+
+                    <div class="col-md-3 box">
+                        Experience
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="number" name="experience" class="form-control"
+                            value="{{objBarber.experience}}" />
+                    </div>
+                    <div class="col-md-3 box">
+                        Average Review
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="number" name="averageReview" class="form-control"
+                            value="{{objBarber.averageReview}}" />
+                    </div>
+                    <div class="col-md-3 box">
+                        ContactNo
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="text" name="contactNo" class="form-control"
+                            value="{{objBarber.contactNo}}" pattern="[0-9]{10}" />
+                    </div>
+                    <div class="col-md-3 box">
+                        Email
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="email" name="userEmail" class="form-control"
+                            value="{{objBarber.userEmail}}" />
+                    </div>
+                    <div class="col-md-3 box">
+                        Password
+                    </div>
+                    <div class="col-md-9 box">
+                        <input required type="password" name="password" class="form-control" />
+                    </div>
+                    <div class="col-md-12 justify-content-center box" style="display: flex;">
+                        <div>
+                            <input type="submit" class="btn btn-primary" value={{#if
+                                objBarber}}"Edit"{{else}}"Add"{{/if}} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function lettersValidate(key) {
+            var keycode = (key.which) ? key.which : key.keyCode;
+
+            if ((keycode > 64 && keycode < 91) || (keycode > 96 && keycode < 123)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        }
+        function onSubmit(event) {
+            event.preventDefault();
+            let frm = event.target;
+            const io = {
+                status: "APPROVED",
+                type: "BARBER",
+                userFirstName: frm.elements.userFirstName.value,
+                userLastName: frm.elements.userLastName.value,
+                experience: frm.elements.experience.value,
+                averageReview: frm.elements.averageReview.value,
+                contactNo: frm.elements.contactNo.value,
+                userEmail: frm.elements.userEmail.value,
+                password: frm.elements.password.value,
+            }
+
+            const id = "{{id}}"
+            var settings = {
+                "url": id ? "{{base_url}}/admin/barber/edit/{{id}}" : "{{base_url}}/admin/barber/add",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify(io),
+            };
+
+            $.ajax(settings).done(function (response) {
+                window.location.assign("{{base_url}}/admin/barber")
+            }).catch((ex) => {
+                console.log(ex)
+                alert(ex.responseJSON.msg)
+            });
+            console.log(io)
+        }
+    </script>
