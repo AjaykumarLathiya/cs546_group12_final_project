@@ -10,7 +10,7 @@ Motivation:
 It will enable salon staff to add data to the system without bothering about creating report formats that will increase the efficiency of salon staff. This system will use employee’s ids and passwords for employees to access the system. In this case salon’s confidential data will not be available to the unauthorized access Here in this website, we are allowing client to book an appointment in the Appointment book (which is a calendar).
 
 Group Members:
-1. Smith connor
+1. Connor Smith
 2. Raj Bhagat
 3. Srikar Reddy
 4. Ajaykumar Lathiya
